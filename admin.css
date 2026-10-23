@@ -1,0 +1,143 @@
+/* QCM GESTOCI v2.0 — administration */
+body.admin { background: var(--bg); }
+.admin-head {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 16px; background: #fff;
+  border-bottom: 3px solid var(--orange);
+  box-shadow: 0 2px 8px rgba(16, 96, 47, .08);
+}
+.admin-title { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.admin-title strong { color: var(--green-dark); }
+.admin-title span { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.admin-wrap { width: 100%; max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 16px;
+}
+.card h2, .card h3 { margin: 0 0 12px; }
+.card h3 { font-size: 17px; color: var(--green-dark); }
+.login { max-width: 420px; margin: 40px auto; }
+.login .btn { width: 100%; margin-top: 18px; }
+input[type="password"], input[type="search"] {
+  width: 100%; min-height: 48px; padding: 10px 14px; font: inherit; color: var(--ink);
+  border: 2px solid var(--line); border-radius: 12px; background: #fff;
+}
+input[type="password"]:focus, input[type="search"]:focus {
+  border-color: var(--green); outline: none; box-shadow: 0 0 0 4px rgba(16, 96, 47, .15);
+}
+
+.kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+.kpi b { display: block; font-size: 28px; line-height: 1.1; color: var(--orange); }
+.kpi span { font-size: 13px; color: var(--muted); }
+@media (min-width: 760px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
+
+.chart { display: flex; align-items: flex-end; gap: 4px; height: 140px; padding-top: 8px; }
+.bar-col { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+.bar-col i { display: block; width: 100%; background: var(--green); border-radius: 4px 4px 0 0; min-height: 0; transition: height .5s ease; }
+.bar-col.pass i { background: var(--green); }
+.bar-col.fail i { background: var(--orange); }
+.bar-col em { font-style: normal; font-size: 11px; color: var(--muted); height: 14px; }
+.chart-axis { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.toolbar input { flex: 1 1 220px; }
+.btn.small { min-height: 46px; padding: 8px 16px; font-size: 15px; }
+.small-text { font-size: 13px; margin: 10px 0 8px; }
+
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 720px; }
+th, td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; position: sticky; top: 0; background: #fff; }
+th:hover { color: var(--green); }
+th.sorted-asc::after { content: " ▲"; color: var(--orange); }
+th.sorted-desc::after { content: " ▼"; color: var(--orange); }
+.num { text-align: right; }
+td.nom { white-space: normal; min-width: 160px; font-weight: 600; }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 13px; font-weight: 700; }
+.pill.pass { background: var(--green-soft); color: var(--green-dark); }
+.pill.fail { background: var(--orange-soft); color: #a8420f; }
+.del { background: none; border: 0; color: var(--ko); cursor: pointer; font-size: 18px; padding: 6px 10px; border-radius: 8px; }
+.del:hover { background: #fdecea; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.empty { text-align: center; color: var(--muted); padding: 26px 10px; white-space: normal; }
+
+/* ---------- v2.0 : QCM multiples, import Excel ---------- */
+input[type="email"], input[type="date"], input[type="number"] {
+  width: 100%; min-height: 48px; padding: 10px 14px; font: inherit; color: var(--ink);
+  border: 2px solid var(--line); border-radius: 12px; background: #fff;
+}
+input[type="email"]:focus, input[type="date"]:focus, input[type="number"]:focus {
+  border-color: var(--green); outline: none; box-shadow: 0 0 0 4px rgba(16, 96, 47, .15);
+}
+.admin-wrap h2 { margin: 0; }
+.grow { flex: 1 1 auto; }
+.back { margin-bottom: 14px; }
+a.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.btn-danger { background: var(--ko); color: #fff; }
+.btn-danger:hover { background: #9e2e22; }
+.btn.danger { color: var(--ko); }
+
+.current { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; border-width: 2px; }
+.current.on { border-color: var(--green); background: var(--green-soft); }
+.current-text { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.current-text strong { font-size: 20px; color: var(--green-dark); }
+.current-text .muted { font-size: 14px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--orange); }
+.current-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+table.list { min-width: 860px; }
+.list td.actions .acts { display: flex; gap: 6px; justify-content: flex-end; }
+.list .btn.small { min-height: 38px; padding: 6px 12px; font-size: 14px; border-radius: 10px; }
+.row-on td { background: var(--green-soft); }
+.pill.idle { background: transparent; color: var(--muted); font-weight: 400; }
+
+.grid3 { display: grid; grid-template-columns: 1fr; gap: 0 14px; }
+@media (min-width: 760px) { .grid3 { grid-template-columns: 2fr 1fr 1fr; } }
+.field { min-width: 0; }
+.section-title { margin: 26px 0 6px !important; }
+.steps { margin: 6px 0 0; padding-left: 22px; display: grid; gap: 10px; }
+.steps li { padding-left: 4px; }
+.steps li > * { vertical-align: middle; }
+.file-btn { display: inline-flex; align-items: center; margin: 0; cursor: pointer; }
+.import-summary { margin: 18px 0 6px; padding: 12px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); font-weight: 600; }
+.import-summary.ok { background: var(--green-soft); border-color: #b9dcc5; color: var(--green-dark); }
+.import-summary.ko { background: #fdecea; border-color: #f3c2bc; color: var(--ko); }
+.import-errors { margin: 6px 0 0; padding-left: 20px; color: var(--ko); font-size: 14px; display: grid; gap: 3px; }
+.preview { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; background: #fff; }
+.preview summary { cursor: pointer; font-weight: 700; color: var(--green); }
+.preview-list { margin: 12px 0 4px; padding-left: 24px; display: grid; gap: 12px; font-size: 15px; }
+.preview-list ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 2px; }
+.preview-list .pq { margin: 0; font-weight: 600; }
+.preview-list .good { color: var(--ok); font-weight: 700; }
+.preview-list .good::after { content: "  ✓ bonne réponse"; font-weight: 400; font-size: 13px; }
+.preview-list .pe { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+.res-head { margin-bottom: 14px; }
+.res-head p { margin: 4px 0 0; }
+
+.modal { position: fixed; inset: 0; z-index: 20; background: rgba(11, 69, 34, .45); display: grid; place-items: center; padding: 16px; }
+.modal-box { background: #fff; border-radius: var(--radius); padding: 20px; width: min(460px, 100%); box-shadow: 0 12px 40px rgba(0, 0, 0, .25); }
+.modal-box p { margin: 0; font-weight: 600; }
+.toast {
+  position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 30;
+  width: min(560px, calc(100% - 32px)); padding: 12px 16px; border-radius: 12px;
+  background: var(--green-dark); color: #fff; font-size: 15px; box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+}
+
+/* Liste des QCM en fiches sur téléphone */
+@media (max-width: 759px) {
+  table.list { min-width: 0; font-size: 15px; }
+  .list thead { display: none; }
+  .list tbody, .list tr, .list td { display: block; }
+  .list tr { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-top: 12px; }
+  .list tr.row-on { border-color: var(--green); background: var(--green-soft); }
+  .list td { border: 0; padding: 3px 0; white-space: normal; text-align: left; background: transparent !important; }
+  .list td[data-label] { display: flex; justify-content: space-between; gap: 12px; }
+  .list td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 13px; }
+  .list td.nom { font-size: 17px; margin-bottom: 4px; }
+  .list td.actions .acts { flex-wrap: wrap; justify-content: flex-start; margin-top: 8px; }
+  .list td.empty { border: 0; }
+}

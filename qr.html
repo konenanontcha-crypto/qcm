@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!-- QCM GESTOCI v2.0 — QR code unique du site -->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'">
+  <title>QR code · QCM GESTOCI</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="qr.css">
+</head>
+<body>
+  <main class="wrap qr-page">
+    <p class="noprint"><a class="btn btn-ghost small-link" href="admin.html">← Espace administrateur</a></p>
+    <h1>QR code du QCM</h1>
+    <p class="lead center">Ce QR code ne change jamais : il ouvre le site, qui affiche le QCM mis en cours dans l'espace administrateur. Imprimez-le une fois ou projetez-le.</p>
+    <div class="qr-card">
+      <canvas id="qr" width="640" height="640" aria-label="QR code du QCM GESTOCI"></canvas>
+      <p class="qr-caption">Scannez pour passer le QCM</p>
+    </div>
+    <label for="url">Adresse encodée</label>
+    <input id="url" type="text" inputmode="url" spellcheck="false">
+    <p class="hint" id="warn" hidden>Cette adresse n'est joignable que depuis cet ordinateur. Ouvrez cette page depuis l'adresse publique du site (GitHub Pages) pour obtenir le bon QR code.</p>
+    <div class="nav nav-col">
+      <button class="btn btn-primary" id="btnPng" type="button">Télécharger en PNG</button>
+      <button class="btn btn-ghost" id="btnPrint" type="button">Imprimer</button>
+    </div>
+  </main>
+  <script src="vendor/qrcode.js"></script>
+  <script src="qr.js"></script>
+</body>
+</html>

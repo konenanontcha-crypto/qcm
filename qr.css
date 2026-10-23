@@ -1,0 +1,17 @@
+/* QCM GESTOCI v2.0 — page QR code */
+.qr-page { text-align: left; }
+.qr-card {
+  background: #fff; border: 2px solid var(--line); border-radius: 20px;
+  padding: 18px; margin: 10px auto 22px; width: min(420px, 100%); text-align: center;
+  box-shadow: 0 6px 20px rgba(16, 96, 47, .12);
+}
+.qr-card canvas { width: 100%; height: auto; display: block; }
+.qr-caption { margin: 10px 0 0; font-weight: 700; color: var(--green-dark); }
+@media print {
+  body { background: #fff; }
+  .qr-page > :not(.qr-card):not(h1) { display: none !important; }
+  .qr-card { box-shadow: none; width: 15cm; margin-top: 1cm; }
+  .foot { display: none; }
+}
+.small-link { min-height: 40px; padding: 6px 14px; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; }
+@media print { .noprint { display: none !important; } }
