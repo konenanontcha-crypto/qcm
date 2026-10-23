@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- QCM GESTOCI v2.0 — page participant -->
+<!-- QCM GESTOCI v2.1 — page participant (nom et matricule saisis au début) -->
 <html lang="fr">
 <head>
   <meta charset="utf-8">
@@ -36,8 +36,15 @@
           <li><strong id="homeMinutes">~5</strong><span>minutes</span></li>
           <li><strong>/20</strong><span>votre note</span></li>
         </ul>
-        <p class="hint">Une seule réponse par question. Vous saisirez votre nom et votre matricule à la fin, puis votre note s'affichera avec la correction.</p>
-        <button class="btn btn-primary" id="btnStart" type="button">Commencer le QCM</button>
+        <form id="identForm" class="ident" novalidate autocomplete="off">
+          <label for="nom">Nom et prénoms</label>
+          <input id="nom" name="nom" type="text" maxlength="80" autocomplete="name" placeholder="Ex. KOUASSI Aya" required>
+          <label for="matricule">Matricule</label>
+          <input id="matricule" name="matricule" type="text" maxlength="30" autocapitalize="characters" autocomplete="off" placeholder="Ex. GES-0123" required>
+          <p class="error" id="identError" role="alert" hidden></p>
+          <p class="hint">Une seule réponse par question. Votre note s'affichera à la fin, avec la correction.</p>
+          <button class="btn btn-primary" id="btnStart" type="submit">Commencer le QCM</button>
+        </form>
       </div>
       <div id="homeEmpty" hidden>
         <p class="lead center" id="homeEmptyText">Le QCM sera disponible au moment de la présentation. Revenez quand l'animateur vous le demandera.</p>
@@ -50,27 +57,11 @@
     <section class="screen" id="screen-question" hidden>
       <h2 class="question" id="qText" tabindex="-1"></h2>
       <div class="options" id="qOptions" role="radiogroup" aria-labelledby="qText"></div>
+      <p class="error" id="qError" role="alert" hidden></p>
       <div class="nav">
         <button class="btn btn-ghost" id="btnPrev" type="button">Précédent</button>
         <button class="btn btn-primary" id="btnNext" type="button" disabled>Suivant</button>
       </div>
-    </section>
-
-    <!-- Identification -->
-    <section class="screen" id="screen-identify" hidden>
-      <h2 tabindex="-1" id="identifyTitle">Dernière étape</h2>
-      <p class="lead">Saisissez vos informations pour enregistrer votre résultat et découvrir votre note.</p>
-      <form id="identifyForm" novalidate autocomplete="off">
-        <label for="nom">Nom et prénoms</label>
-        <input id="nom" name="nom" type="text" maxlength="80" autocomplete="name" placeholder="Ex. KOUASSI Aya" required>
-        <label for="matricule">Matricule</label>
-        <input id="matricule" name="matricule" type="text" maxlength="30" autocapitalize="characters" autocomplete="off" placeholder="Ex. GES-0123" required>
-        <p class="error" id="formError" role="alert" hidden></p>
-        <div class="nav">
-          <button class="btn btn-ghost" id="btnBack" type="button">Retour</button>
-          <button class="btn btn-primary" id="btnSubmit" type="submit">Voir ma note</button>
-        </div>
-      </form>
     </section>
 
     <!-- Résultat -->

@@ -1,4 +1,4 @@
-/* QCM GESTOCI v2.0 — styles communs */
+/* QCM GESTOCI v2.1 — styles communs (v2.1 : formulaire d’identification à l’accueil) */
 :root {
   --green: #10602f;
   --green-dark: #0b4522;
@@ -209,3 +209,9 @@ input[type="text"]:focus { border-color: var(--green); outline: none; box-shadow
   body { font-size: 18px; }
   .wrap { padding-top: 36px; }
 }
+
+/* v2.1 : identification sur l'écran d'accueil */
+.ident { margin-top: 22px; text-align: left; }
+.ident label:first-child { margin-top: 0; }
+.ident .hint { margin: 16px 6px 18px; }
+#matricule { text-transform: uppercase; }

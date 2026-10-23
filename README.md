@@ -1,6 +1,6 @@
-# QCM GESTOCI v2.0
+# QCM GESTOCI v2.1
 
-Application web de QCM pour les participants d'une présentation. Les participants scannent un QR code unique, répondent sur leur téléphone aux questions dans un ordre aléatoire, saisissent leur nom et leur matricule, puis reçoivent leur note sur 20 et la correction.
+Application web de QCM pour les participants d'une présentation. Les participants scannent un QR code unique, saisissent leur nom et leur matricule, répondent sur leur téléphone aux questions dans un ordre aléatoire, puis reçoivent leur note sur 20 et la correction.
 
 - **Pages web** : hébergées gratuitement sur GitHub Pages.
 - **Base de données, notation et comptes admin** : Supabase (offre gratuite).
@@ -12,7 +12,7 @@ Application web de QCM pour les participants d'une présentation. Les participan
 |---|---|
 | `index.html`, `app.js` | page participant (celle que le QR code ouvre) |
 | `admin.html`, `admin.js` | espace administrateur |
-| `qr.html`, `qr.js` | QR code unique du site |
+| `qr.html`, `qr.js`, `qrcode-lib.js` | QR code unique du site |
 | `config.js` | **à remplir** : adresse et clé publique de votre projet Supabase |
 | `api.js` | accès aux données (Supabase, ou mode démo) |
 | `xlsx-lecteur.js` | lecture du fichier Excel importé, dans le navigateur |

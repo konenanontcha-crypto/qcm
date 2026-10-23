@@ -1,7 +1,8 @@
-/* QCM GESTOCI v2.0 — page participant
+/* QCM GESTOCI v2.1 — page participant
  * v2.0 : QCM chargé depuis Supabase (QCM en cours choisi dans l'admin),
  *        questions et réponses mélangées pour chaque participant,
  *        notation côté serveur, explication facultative.
+ * v2.1 : nom et matricule saisis au début, envoi direct après la dernière question.
  */
 (() => {
   "use strict";
@@ -9,13 +10,13 @@
   const $ = (sel) => document.querySelector(sel);
   const LETTERS = ["A", "B", "C", "D", "E", "F"];
   const STORE_KEY = "gestoci-qcm-v2";
+  const IDENT_KEY = "gestoci-qcm-ident";
   const RING = 377; // circonférence du cercle (r = 60)
   const api = window.QcmApi;
 
   const screens = {
     home: $("#screen-home"),
     question: $("#screen-question"),
-    identify: $("#screen-identify"),
     result: $("#screen-result")
   };
 
@@ -23,6 +24,8 @@
     qcmId: null,
     titre: "",
     seuil: 14,
+    nom: "",
+    matricule: "",
     questions: [], // dans l'ordre affiché
     optOrder: {},  // id question -> ordre d'affichage des options (indices d'origine)
     answers: {},   // id question -> indice d'origine de l'option choisie
@@ -56,6 +59,8 @@
         STORE_KEY,
         JSON.stringify({
           qcmId: state.qcmId,
+          nom: state.nom,
+          matricule: state.matricule,
           order: state.questions.map((q) => q.id),
           optOrder: state.optOrder,
           answers: state.answers,
@@ -80,8 +85,7 @@
     const done = Object.keys(state.answers).length;
     $("#progressFill").style.width = Math.round((done / total) * 100) + "%";
     $("#progressBar").setAttribute("aria-valuenow", String(Math.round((done / total) * 100)));
-    $("#progressLabel").textContent =
-      state.idx < total ? "Question " + (state.idx + 1) + " sur " + total : "Dernière étape";
+    $("#progressLabel").textContent = "Question " + (state.idx + 1) + " sur " + total;
   }
 
   // ---------- questions ----------
@@ -111,8 +115,9 @@
 
     $("#btnPrev").hidden = state.idx === 0;
     const next = $("#btnNext");
-    next.textContent = state.idx === total - 1 ? "Terminer" : "Suivant";
+    next.textContent = state.idx === total - 1 ? "Valider mes réponses" : "Suivant";
     next.disabled = state.answers[q.id] === undefined;
+    $("#qError").hidden = true;
     setProgress();
   }
 
@@ -139,43 +144,32 @@
   function next() {
     const total = state.questions.length;
     if (state.idx < total - 1) return goTo(state.idx + 1);
-    state.idx = total;
-    save();
-    setProgress();
-    show("identify", $("#identifyTitle"));
+    submit();
   }
 
   // ---------- envoi ----------
-  async function submit(ev) {
-    ev.preventDefault();
+  async function submit() {
     if (state.sending) return;
-    const nom = $("#nom").value.replace(/\s+/g, " ").trim();
-    const matricule = $("#matricule").value.trim();
-    const err = $("#formError");
+    const err = $("#qError");
     err.hidden = true;
-
-    if (nom.length < 2) return fail("Indiquez votre nom et vos prénoms.");
-    if (matricule.length < 2) return fail("Indiquez votre matricule.");
-
-    function fail(msg) {
-      err.textContent = msg;
-      err.hidden = false;
-    }
-
     state.sending = true;
-    const btn = $("#btnSubmit");
+    const btn = $("#btnNext");
+    const prev = $("#btnPrev");
     btn.disabled = true;
+    prev.disabled = true;
     btn.textContent = "Envoi en cours…";
     try {
       const duree = Math.round((Date.now() - state.startedAt) / 1000);
-      const data = await api.soumettre(state.qcmId, nom, matricule, state.answers, duree);
+      const data = await api.soumettre(state.qcmId, state.nom, state.matricule, state.answers, duree);
       clearSaved();
       showResult(data);
     } catch (e) {
-      fail(e.message || "Une erreur est survenue. Réessayez.");
+      err.textContent = (e && e.message) || "Une erreur est survenue. Réessayez.";
+      err.hidden = false;
       btn.disabled = false;
-      btn.textContent = "Voir ma note";
+      btn.textContent = "Valider mes réponses";
     } finally {
+      prev.disabled = false;
       state.sending = false;
     }
   }
@@ -292,7 +286,18 @@
   }
 
   // ---------- démarrage ----------
-  function begin() {
+  function begin(ev) {
+    ev.preventDefault();
+    const nom = $("#nom").value.replace(/\s+/g, " ").trim();
+    const matricule = $("#matricule").value.trim().toUpperCase();
+    const err = $("#identError");
+    err.hidden = true;
+    const fail = (msg, champ) => { err.textContent = msg; err.hidden = false; champ.focus(); };
+    if (nom.length < 2) return fail("Indiquez votre nom et vos prénoms.", $("#nom"));
+    if (matricule.length < 2) return fail("Indiquez votre matricule.", $("#matricule"));
+    state.nom = nom;
+    state.matricule = matricule;
+    try { sessionStorage.setItem(IDENT_KEY, JSON.stringify({ nom, matricule })); } catch { /* ignore */ }
     state.questions = shuffle(state.questions);
     state.optOrder = {};
     state.questions.forEach((q) => { state.optOrder[q.id] = shuffle(q.options.map((_, i) => i)); });
@@ -325,6 +330,10 @@
       $("#homeCount").textContent = String(data.questions.length);
       $("#homeMinutes").textContent = "~" + Math.max(2, Math.round(data.questions.length * 0.25));
       $("#homeReady").hidden = false;
+      try {
+        const id = JSON.parse(sessionStorage.getItem(IDENT_KEY) || "null");
+        if (id) { $("#nom").value = id.nom || ""; $("#matricule").value = id.matricule || ""; }
+      } catch { /* ignore */ }
 
       // Reprise après un rechargement accidentel de la page
       const saved = loadSaved();
@@ -334,10 +343,12 @@
         state.questions = saved.order.map((id) => byId.get(id));
         state.optOrder = saved.optOrder;
         state.answers = saved.answers;
+        state.nom = saved.nom || "";
+        state.matricule = saved.matricule || "";
         state.startedAt = saved.startedAt || Date.now();
         const total = state.questions.length;
-        if (saved.idx >= total) { state.idx = total; setProgress(); show("identify", $("#identifyTitle")); }
-        else goTo(Math.max(0, saved.idx));
+        if (state.nom && state.matricule) goTo(Math.min(Math.max(0, saved.idx), total - 1));
+        else clearSaved();
       } else if (saved) {
         clearSaved();
       }
@@ -352,12 +363,11 @@
 
   function init() {
     if (api.mode === "demo") $("#demoBand").hidden = false;
-    $("#btnStart").addEventListener("click", begin);
+    $("#identForm").addEventListener("submit", begin);
+    ["#nom", "#matricule"].forEach((sel) => $(sel).addEventListener("input", () => { $("#identError").hidden = true; }));
     $("#btnReload").addEventListener("click", load);
     $("#btnPrev").addEventListener("click", () => goTo(state.idx - 1));
     $("#btnNext").addEventListener("click", next);
-    $("#btnBack").addEventListener("click", () => goTo(state.questions.length - 1));
-    $("#identifyForm").addEventListener("submit", submit);
     $("#btnReview").addEventListener("click", () => {
       const box = $("#review");
       box.hidden = !box.hidden;
